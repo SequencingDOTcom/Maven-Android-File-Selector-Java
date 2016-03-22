@@ -1,0 +1,14 @@
+<resources>
+
+    <style name="SequencingTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+
+        <item name="android:windowActionBar">false</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+
+    </style>
+
+</resources>
