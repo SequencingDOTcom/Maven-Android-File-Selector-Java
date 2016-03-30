@@ -14,39 +14,15 @@ Once the Master Plugin is added to your app all you'll need to do is:
 
 To code Real-Time Personalization technology into apps, developers may [register for a free account](https://sequencing.com/user/register/) at Sequencing.com. App development with RTP is always free.
 
-Related repos
-=========================================
-**Master Plugin is available in the following languages:**
-* [Android (Maven plugin)](https://github.com/SequencingDOTcom/Maven-Android-Master-Plugin-Java)
-* [Java (Maven plugin)](https://github.com/SequencingDOTcom/Maven-Android-Master-Plugin-Java) 
-* [Objective-C (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-ObjectiveC)
-* [Swift (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-Swift)
-
-**File Selector is available in the following languages:**
-File Selector Plugins
-* Android (Maven plugin) <-- this repo
-* Java (Maven plugin) <-- this repo
-* [Objective-C (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-ObjectiveC)
-* [Swift (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPod-iOS-File-Selector-Swift)
-
-File Selector Code
-* [Android (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/android)
-* [Objective-C (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/objective-c)
-* [Swift (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/swift)
-* [PHP](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/php)
-* [Perl](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/perl)
-* [Python (Django)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/python-django)
-* [Java (Servlet)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/java-servlet)
-* [Java (Spring)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/java-spring)
-* [.NET/C#](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/dot-net-cs)
 
 Contents
 =========================================
-* Related repos
 * Implementation
+* Gradle integration
 * App chains
 * Authentication flow
 * Steps
+* Related repos
 * Resources
 * Maintainers
 * Contribute
@@ -62,6 +38,101 @@ To implement oAuth2 authentication for your app:
 3) [Generate an OAuth2 secret](https://sequencing.com/api-secret-generator) and insert the secret into the OAuth2 code
 
 Once OAuth2 authentication is implemented, select one or more [app chains](https://sequencing.com/app-chains) that will provide information you can use to personalize your app.
+
+
+
+
+
+
+Gradle integration
+======================================
+You need to follow instructions below if you want to build in and use OAuth logic in your existing or new project.
+* create a new Android Gradle based project (i.e. in Android Studio or Eclipse)
+* File selector module prepared as separate module, but it depends on a [SequencingOAuth2Client](https://github.com/SequencingDOTcom/Maven-OAuth-Java/blob/master/src/main/java/com/sequencing/oauth/core/SequencingOAuth2Client.java) instance from oAuth module. File selector can execute request to server for files with [SequencingOAuth2Client](https://github.com/SequencingDOTcom/Maven-OAuth-Java/blob/master/src/main/java/com/sequencing/oauth/core/SequencingOAuth2Client.java) instance only. Thus you need 2 modules to be installed: oAuth module and File Selector module
+* add gradle dependency
+	* see [gradle guides](https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html) 
+	* add dependency into build.gradle file in dependencies section. Here is dependency declaration example:
+	```
+	dependencies {
+   		compile 'com.sequencing:file-selector:1.0.3'
+        compile 'com.sequencing:android-oauth:1.0.2'
+    }
+	```
+* integrate autherization functionality
+	* add imports
+	```
+    import com.sequencing.androidoauth.core.OAuth2Parameters;
+    import com.sequencing.androidoauth.core.ISQAuthCallback;
+    import com.sequencing.fileselector.core.ISQFileCallback;
+    import com.sequencing.androidoauth.core.SQUIoAuthHandler;
+    import com.sequencing.fileselector.core.SQUIFileSelectHandler;
+    import com.sequencing.oauth.config.AuthenticationParameters;
+    import com.sequencing.oauth.core.Token;
+    ```
+* oAuth Gradle plugin reference: [Maven-Android-OAuth-Java](https://github.com/SequencingDOTcom/Maven-Android-OAuth-Java)
+* integrate autherization functionality reference: [Maven-Android-OAuth-Java](https://github.com/SequencingDOTcom/Maven-Android-OAuth-Java)
+* integrate file selector functionality
+	* save [SequencingOAuth2Client](https://github.com/SequencingDOTcom/Maven-OAuth-Java/blob/master/src/main/java/com/sequencing/oauth/core/SequencingOAuth2Client.java) instance of authentication flow
+	* implement [ISQFileCallback](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/core/ISQFileCallback.java)
+	```
+     /**
+     * Callback for handling selected file
+     * @param entity selected file entity
+     * @param activity activity of file selector
+     */
+    void onFileSelected(FileEntity entity, Activity activity);
+	```
+	* create [SQUIFileSelectHandler](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/core/SQUIFileSelectHandler.java) instance that is handling file selection process
+	* register your file selection handler by invoking ```selectFile``` method with stored [SequencingOAuth2Client](https://github.com/SequencingDOTcom/Maven-OAuth-Java/blob/master/src/main/java/com/sequencing/oauth/core/SequencingOAuth2Client.java) and callback
+	* when you invoke ```selectFile``` method will be started file selector UI
+	* when user selects any file and clics on "Continue" button in UI will be invoked user [ISQFileCallback](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/core/ISQFileCallback.java) implementation and passed to him [FileEntity](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/FileEntity.java) object and current file selector activity
+	* each file is represented as [FileEntity](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/FileEntity.java) object with following keys and values format:
+	key name | type | description
+	------------- | ------------- | ------------- 
+	DateAdded | String | date file was added
+	Ext | String | file extension
+	FileCategory | String | file category: Community, Uploaded, FromApps, Altruist
+	FileSubType | String | file subtype
+	FileType | String | file type
+	FriendlyDesc1 | String | person name for sample files
+	FriendlyDesc2 | String | person description for sample files
+	Id | String | file ID
+	Name | String | file name
+	Population | String | 
+	Sex | String |	the sex
+
+* examples 
+	* example of ```My files```
+	* 
+	* example of ```Sample files```
+	* 
+	* example of ```Select File``` button
+	
+	```Button btnFileSelector = (Button)findViewById(R.id.btnFileSelector);```
+    * example of [SQUIFileSelectHandler](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/core/SQUIFileSelectHandler.java) initialization
+
+	```SQUIFileSelectHandler fileSelectHandler = new SQUIFileSelectHandler(this);```
+    * example of ```selectFile``` method
+
+	```
+	fileSelectHandler.selectFile(OAuth2Parameters.getInstance().getOauth(), new ISQFileCallback() {
+
+                    @Override
+                    public void onFileSelected(FileEntity entity, Activity activity) {
+                        Log.i(TAG, "File has been selected");
+
+                        Toast toast = Toast.makeText(getApplicationContext(), entity.toString(), Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                });
+	```
+
+
+
+
+
+
+
 
 App chains
 ======================================
@@ -88,8 +159,7 @@ Authentication flow
 ======================================
 Sequencing.com uses standard OAuth approach which enables applications to obtain limited access to user accounts on an HTTP service from 3rd party applications without exposing the user's password. OAuth acts as an intermediary on behalf of the end user, providing the service with an access token that authorizes specific account information to be shared.
 
-![Authentication sequence diagram]
-(https://github.com/SequencingDOTcom/oAuth2-code-and-demo/blob/master/screenshots/oauth_activity.png)
+![Authentication sequence diagram](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/blob/master/screenshots/oauth_activity.png)
 
 
 ## Steps
@@ -143,6 +213,32 @@ Following POST parameters have to be sent
 ### Step 5: Application Receives Access Token
 
 If the authorization is valid, the API will send a JSON response containing the access token  to the application.
+
+Related repos
+=========================================
+**Master Plugin is available in the following languages:**
+* [Android (Maven plugin)](https://github.com/SequencingDOTcom/Maven-Android-Master-Plugin-Java)
+* [Java (Maven plugin)](https://github.com/SequencingDOTcom/Maven-Android-Master-Plugin-Java) 
+* [Objective-C (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-ObjectiveC)
+* [Swift (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-Swift)
+
+**File Selector is available in the following languages:**
+File Selector Plugins
+* Android (Maven plugin) <-- this repo
+* Java (Maven plugin) <-- this repo
+* [Objective-C (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPods-iOS-Master-Plugin-ObjectiveC)
+* [Swift (CocoaPod plugin)](https://github.com/SequencingDOTcom/CocoaPod-iOS-File-Selector-Swift)
+
+File Selector Code
+* [Android (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/android)
+* [Objective-C (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/objective-c)
+* [Swift (code)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/swift)
+* [PHP](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/php)
+* [Perl](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/perl)
+* [Python (Django)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/python-django)
+* [Java (Servlet)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/java-servlet)
+* [Java (Spring)](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/java-spring)
+* [.NET/C#](https://github.com/SequencingDOTcom/oAuth2-code-and-demo/tree/master/dot-net-cs)
 
 Resources
 ======================================
