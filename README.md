@@ -103,9 +103,12 @@ You need to follow instructions below if you want to build in and use OAuth logi
 
 * examples 
 	* example of ```My files```
-	* 
+	
+	![my files](https://raw.githubusercontent.com/SequencingDOTcom/Maven-Android-File-Selector-Java/master/Screenshots/file_selector_my_files.png)
 	* example of ```Sample files```
-	* 
+	
+    ![sample files](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/Screenshots/file_selector_sample_files.png)
+    ![sample files](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/Screenshots/file_selector_sample_files_selected.png)
 	* example of ```Select File``` button
 	
 	```Button btnFileSelector = (Button)findViewById(R.id.btnFileSelector);```
@@ -126,12 +129,6 @@ You need to follow instructions below if you want to build in and use OAuth logi
                     }
                 });
 	```
-
-
-
-
-
-
 
 
 App chains
