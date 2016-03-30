@@ -87,19 +87,20 @@ You need to follow instructions below if you want to build in and use OAuth logi
 	* when you invoke ```selectFile``` method will be started file selector UI
 	* when user selects any file and clics on "Continue" button in UI will be invoked user [ISQFileCallback](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/core/ISQFileCallback.java) implementation and passed to him [FileEntity](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/FileEntity.java) object and current file selector activity
 	* each file is represented as [FileEntity](https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java/blob/master/src/main/java/com/sequencing/fileselector/FileEntity.java) object with following keys and values format:
-	key name | type | description
-	------------- | ------------- | ------------- 
-	DateAdded | String | date file was added
-	Ext | String | file extension
-	FileCategory | String | file category: Community, Uploaded, FromApps, Altruist
-	FileSubType | String | file subtype
-	FileType | String | file type
-	FriendlyDesc1 | String | person name for sample files
-	FriendlyDesc2 | String | person description for sample files
-	Id | String | file ID
-	Name | String | file name
-	Population | String | 
-	Sex | String |	the sex
+	
+      key name | type | description
+      ------------- | ------------- | ------------- 
+      DateAdded | String | date file was added
+      Ext | String | file extension
+      FileCategory | String | file category: Community, Uploaded, FromApps, Altruist
+      FileSubType | String | file subtype
+      FileType | String | file type
+      FriendlyDesc1 | String | person name for sample files
+      FriendlyDesc2 | String | person description for sample files
+      Id | String | file ID
+      Name | String | file name
+      Population | String | 
+      Sex | String |	the sex
 
 * examples 
 	* example of ```My files```
