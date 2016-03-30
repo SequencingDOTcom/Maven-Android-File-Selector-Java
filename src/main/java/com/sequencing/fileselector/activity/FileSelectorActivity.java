@@ -1,13 +1,17 @@
 package com.sequencing.fileselector.activity;
 
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nhaarman.supertooltips.ToolTip;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
@@ -78,11 +83,12 @@ public class FileSelectorActivity extends AppCompatActivity implements FragmentT
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_selector);
+
         serverResponse = getIntent().getStringExtra("serverResponse");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mainToolbar);
         toolbar.setTitle("Select to file");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.fs_colorAccent));
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_keyboard_backspace_black_36dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -102,7 +108,7 @@ public class FileSelectorActivity extends AppCompatActivity implements FragmentT
 
         tabHostCategory.addTab(tabHostCategory.newTabSpec(FileSelectHelper.ATTR_MY_FILES).setIndicator(myFilesTabContent), MyFileActivity.class, null);
         tabHostCategory.addTab(tabHostCategory.newTabSpec(FileSelectHelper.ATTR_SAMPLE).setIndicator(sampleFilesTabContent), SampleFileActivity.class, null);
-        changeTabContent(myFilesTabContent, R.color.colorAccent, R.mipmap.my_files_icon_sequencing_com_color);
+        changeTabContent(myFilesTabContent, R.color.fs_colorAccent, R.mipmap.my_files_icon_sequencing_com_color);
 
         tabHostCategory.setOnTabChangedListener(this);
 
@@ -125,13 +131,13 @@ public class FileSelectorActivity extends AppCompatActivity implements FragmentT
             case FileSelectHelper.ATTR_MY_FILES:
                 fileList = (ListView) findViewById(R.id.sampleFileList);
                 changeTabContent(sampleFilesTabContent, R.color.tabUnselectedColor, R.mipmap.sample_files_icon_sequencing_com_gray);
-                changeTabContent(myFilesTabContent, R.color.colorAccent, R.mipmap.my_files_icon_sequencing_com_color);
+                changeTabContent(myFilesTabContent, R.color.fs_colorAccent, R.mipmap.my_files_icon_sequencing_com_color);
                 break;
 
             case FileSelectHelper.ATTR_SAMPLE:
                 fileList = (ListView) findViewById(R.id.myFileList);
                 changeTabContent(myFilesTabContent, R.color.tabUnselectedColor, R.mipmap.my_files_icon_sequencing_com_gray);
-                changeTabContent(sampleFilesTabContent, R.color.colorAccent, R.mipmap.sample_files_icon_sequencing_com_blue);
+                changeTabContent(sampleFilesTabContent, R.color.fs_colorAccent, R.mipmap.sample_files_icon_sequencing_com_blue);
                 break;
         }
         Log.d(TAG, "FileSelectorActivity: tab -> " + tabId);
@@ -208,6 +214,7 @@ public class FileSelectorActivity extends AppCompatActivity implements FragmentT
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_file_selector, menu);
         FileSelectorActivity.menu = menu;
+
         if (currentEntity == null)
             hideOption(R.id.Continue);
         else

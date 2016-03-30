@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fileSelectorActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.FileSelectorActivity">
 
     <LinearLayout
@@ -13,13 +12,12 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/mainToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"
-            android:theme="@style/SequencingTheme"
-            app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:background="@color/fs_colorPrimary"
+            android:elevation="4dp"/>
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
