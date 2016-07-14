@@ -1,46 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fileSelectorActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fileSelectorActivity"
     tools:context=".activity.FileSelectorActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/mainToolbar"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/fs_colorPrimary"
-            android:elevation="4dp"/>
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.v7.widget.Toolbar
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/fs_colorPrimary"
+                android:theme="@style/AppTheme.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <TextView
+                android:id="@+id/tvToolbarTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="@string/toolbar_title"
+                android:textColor="@color/fs_colorAccent"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
+
             <android.support.v4.app.FragmentTabHost
                 android:id="@+id/tabCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/tabHostColor"/>
+                android:background="@color/tabHostColor" />
         </LinearLayout>
-
-     </LinearLayout>
+    </LinearLayout>
 
     <com.nhaarman.supertooltips.ToolTipRelativeLayout
-        android:id="@+id/activity_main_tooltipRelativeLayout"
+        android:id="@+id/tooltip"
         android:layout_width="match_parent"
-        android:layout_marginRight="2dp"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginRight="2dp" />
 </RelativeLayout>

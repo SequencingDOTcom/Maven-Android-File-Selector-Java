@@ -16,6 +16,7 @@ import com.sequencing.fileselector.R;
 import com.sequencing.fileselector.helper.FileSelectHelper;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -73,6 +74,29 @@ public class MyFileActivity extends Fragment implements AdapterView.OnItemClickL
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        FileEntity previousFile = FileSelectorActivity.getPreviousSelectedFile();
+        if(previousFile != null
+                && !previousFile.getFileCategory().equals(FileSelectHelper.ATTR_SAMPLE)){
+            List<String> sampleCategories = FileSelectHelper.getMyFilesSubCategories(allEntities);
+
+            int tabIndex = sampleCategories.indexOf(previousFile.getFileCategory());
+            tabHostMyFile.getTabWidget().getChildTabViewAt(tabIndex).performClick();
+
+            List<FileEntity> allSampleFileEntities = FileSelectHelper.getMyFileEntitiesByCategory(allEntities, previousFile.getFileCategory());
+            int fileIndex = allSampleFileEntities.indexOf(previousFile);
+
+            myFileList.performItemClick(
+                    myFileList.getAdapter().getView(fileIndex, null, null),
+                    fileIndex,
+                    myFileList.getAdapter().getItemId(fileIndex));
+
+            myFileList.setSelection(fileIndex);
+        }
+    }
+
     /**
      * Save selected item to FileSelectorActivity field
      */
@@ -80,7 +104,7 @@ public class MyFileActivity extends Fragment implements AdapterView.OnItemClickL
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "itemClick: position = " + position + " tab: " + tabHostMyFile.getCurrentTabTag());
 
-        FileSelectorActivity.showOption(R.id.Continue);
+        FileSelectorActivity.showOption(R.id.btnContinue);
         FileEntity currentEntity = FileSelectHelper.getMyFileEntitiesByCategory(allEntities, tabHostMyFile.getCurrentTabTag()).get(position);
         FileSelectorActivity.setCurrentEntity(currentEntity);
     }
@@ -94,13 +118,13 @@ public class MyFileActivity extends Fragment implements AdapterView.OnItemClickL
         @Override
         public void onTabChanged(String tabId) {
             switch (tabId){
-                case FileSelectHelper.ATTR_SAMPLE_UPLOADED:
-                case FileSelectHelper.ATTR_SAMPLE_SHARED:
-                case FileSelectHelper.ATTR_SAMPLE_ALTRUIST:
-                case FileSelectHelper.ATTR_SAMPLE_FROMAPPS:
+                case FileSelectHelper.ATTR_MY_FILES_UPLOADED:
+                case FileSelectHelper.ATTR_MY_FILES_SHARED:
+                case FileSelectHelper.ATTR_MY_FILES_ALTRUIST:
+                case FileSelectHelper.ATTR_MY_FILES_FROMAPPS:
                     myFileList.setAdapter(getArrayAdapterForMyFiles(allEntities, tabId));
                     FileSelectorActivity.setCurrentEntity(null);
-                    FileSelectorActivity.hideOption(R.id.Continue);
+                    FileSelectorActivity.hideOption(R.id.btnContinue);
                     currentTab = tabHostMyFile.getCurrentTab();
                     break;
             }
@@ -122,11 +146,11 @@ public class MyFileActivity extends Fragment implements AdapterView.OnItemClickL
      * @return TabSpec array for my files tab host
      */
     private TabHost.TabSpec[] getMyFilesCategories(FileEntity[] allEntities){
-        Set<String> myFilesSubCategoriesSet = FileSelectHelper.getMyFilesSubCategories(allEntities);
+        List<String> myFilesSubCategoriesList = FileSelectHelper.getMyFilesSubCategories(allEntities);
 
-        TabHost.TabSpec[] myFilesSubCategories = new TabHost.TabSpec[myFilesSubCategoriesSet.size()];
+        TabHost.TabSpec[] myFilesSubCategories = new TabHost.TabSpec[myFilesSubCategoriesList.size()];
 
-        Iterator<String> categoriesIter = myFilesSubCategoriesSet.iterator();
+        Iterator<String> categoriesIter = myFilesSubCategoriesList.iterator();
         for(int i = 0; i < myFilesSubCategories.length; i++) {
             String subCategoryName = categoriesIter.next();
 

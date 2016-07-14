@@ -9,6 +9,12 @@
     <color name="colorPrimaryDark">#a0d4fa</color>
     <color name="colorAccent">#125688</color>
 
+    <color name="btnTextCollor">#FFFFFF</color>
+    <color name="btnBackgroundCollor">#cccccc</color>
+    <color name="btnBackgroundCollorPressed">#bebebe</color>
+    <color name="btnBackgroundCollorBorder">#b7b7b7</color>
+
+
 
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>

@@ -2,8 +2,10 @@ package com.sequencing.fileselector.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.sequencing.fileselector.activity.SplashActivity;
 import com.sequencing.oauth.core.SequencingOAuth2Client;
 import com.sequencing.oauth.exception.NonAuthorizedException;
 import com.sequencing.fileselector.activity.FileSelectorActivity;
@@ -25,6 +27,11 @@ public class SQUIFileSelectHandler {
      */
     private static ISQFileCallback fileCallback;
 
+    /**
+     * oAuth2Client instance
+     */
+    private static SequencingOAuth2Client sequencingOAuth2Client;
+
     private static final String TAG = "SQUIFileSelectHandler";
 
     public SQUIFileSelectHandler(Context context){
@@ -34,26 +41,27 @@ public class SQUIFileSelectHandler {
     /**
      * Receives files from Sequencing.com and sends them to user handler
      * @param fileCallback user callback for handling selected file
+     * @param fileId previous selected file
      */
-    public void selectFile(SequencingOAuth2Client sequencingOAuth2Client, ISQFileCallback fileCallback){
+    public void selectFile(SequencingOAuth2Client sequencingOAuth2Client, ISQFileCallback fileCallback, boolean showRotatingCube, @Nullable String fileId){
         if (fileCallback == null)
             throw new RuntimeException();
         this.fileCallback = fileCallback;
+        this.sequencingOAuth2Client = sequencingOAuth2Client;
 
-        String jsonResponse = null;
-        try {
-            jsonResponse = FileSelectorParameters.getInstance().getFilesApi(sequencingOAuth2Client).getFiles();
-        } catch (NonAuthorizedException e) {
-            Log.w(TAG, "Non authorized user", e);
-        }
-
-        Intent intent = new Intent(context, FileSelectorActivity.class);
-        intent.putExtra("serverResponse", jsonResponse);
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.putExtra("fileId", fileId);
+        intent.putExtra("showRotatingCube", showRotatingCube);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
     public static ISQFileCallback getFileCallback(){
         return fileCallback;
+    }
+
+
+    public static SequencingOAuth2Client getSequencingOAuth2Client() {
+        return sequencingOAuth2Client;
     }
 }

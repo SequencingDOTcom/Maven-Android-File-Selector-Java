@@ -2,11 +2,14 @@ package com.sequencing.fileselector;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Pojo class serves as wrapper for items of server response
  */
-public class FileEntity {
+public class FileEntity implements Serializable{
 
+    private static final long serialVersionUID = 4839878757146151033L;
     /**
      * date file was added
      */
@@ -176,5 +179,21 @@ public class FileEntity {
                 .append("Population").append(" : ").append(population).append('\n')
                 .append("Sex").append(" : ").append(sex);
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FileEntity that = (FileEntity) o;
+
+        return !(id != null ? !id.equals(that.id) : that.id != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

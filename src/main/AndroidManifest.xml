@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sequencing.fileselector">
 
@@ -5,9 +6,24 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+        <activity
+            android:name=".activity.FileSelectorActivity"
+            android:theme="@style/SequencingTheme"
+            android:label="@string/toolbar_title"/>
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/Theme.Transparent">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-        <activity android:name=".activity.FileSelectorActivity"
-            android:theme="@style/SequencingTheme"/>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="android.resource" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.PreFileSelectorActivity"
+            android:theme="@style/SequencingTheme"
+            android:label="@string/toolbar_title"></activity>
     </application>
 
 </manifest>

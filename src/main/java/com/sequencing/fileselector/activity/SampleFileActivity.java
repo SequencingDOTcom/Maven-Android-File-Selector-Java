@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +17,7 @@ import com.sequencing.fileselector.R;
 import com.sequencing.fileselector.helper.FileSelectHelper;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -66,17 +66,42 @@ public class SampleFileActivity extends Fragment implements AdapterView.OnItemCl
         initTabHost(tabHostSampleFile, getSampleFilesSubCategories());
         tabHostSampleFile.setOnTabChangedListener(new SampleFilesCategoriesListener());
 
+        ArrayAdapter<SpannableString> listAdapter = null;
         if(tabHostSampleFile.getCurrentTabTag().equals(FileSelectHelper.ATTR_SAMPLE_ALL)) {
-            sampleFileList.setAdapter(getArrayAdapterForSampleFiles(allEntities, null));
+            listAdapter = getArrayAdapterForSampleFiles(allEntities, null);
         } else {
-            sampleFileList.setAdapter(getArrayAdapterForSampleFiles(allEntities, tabHostSampleFile.getCurrentTabTag()));
+            listAdapter = getArrayAdapterForSampleFiles(allEntities, tabHostSampleFile.getCurrentTabTag());
         }
+        sampleFileList.setAdapter(listAdapter);
 
         FileEntity currentEntity = FileSelectorActivity.getCurrentEntity();
         tabHostSampleFile.setCurrentTab(currentTab);
         FileSelectorActivity.setCurrentEntity(currentEntity);
 
         return v;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        FileEntity previousFile = FileSelectorActivity.getPreviousSelectedFile();
+        if(previousFile != null
+                && previousFile.getFileCategory().equals(FileSelectHelper.ATTR_SAMPLE)){
+            List<String> sampleCategories = FileSelectHelper.getSampleFilesSubCategories();
+
+            int tabIndex = sampleCategories.indexOf("ALL");
+            tabHostSampleFile.getTabWidget().getChildTabViewAt(tabIndex).performClick();
+
+            List<FileEntity> allSampleFileEntities = FileSelectHelper.getAllSampleFileEntities(allEntities);
+            int fileIndex = allSampleFileEntities.indexOf(previousFile);
+
+            sampleFileList.performItemClick(
+                    sampleFileList.getAdapter().getView(fileIndex, null, null),
+                    fileIndex,
+                    sampleFileList.getAdapter().getItemId(fileIndex));
+
+            sampleFileList.setSelection(fileIndex);
+        }
     }
 
     /**
@@ -86,7 +111,7 @@ public class SampleFileActivity extends Fragment implements AdapterView.OnItemCl
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "itemClick: position = " + position + " tab: " + tabHostSampleFile.getCurrentTabTag());
 
-        FileSelectorActivity.showOption(R.id.Continue);
+        FileSelectorActivity.showOption(R.id.btnContinue);
         FileEntity currentEntity = null;
 
         if(tabHostSampleFile.getCurrentTabTag().equals(FileSelectHelper.ATTR_SAMPLE_ALL))
@@ -114,7 +139,7 @@ public class SampleFileActivity extends Fragment implements AdapterView.OnItemCl
                     break;
             }
             FileSelectorActivity.setCurrentEntity(null);
-            FileSelectorActivity.hideOption(R.id.Continue);
+            FileSelectorActivity.hideOption(R.id.btnContinue);
             currentTab = tabHostSampleFile.getCurrentTab();
             Log.i(TAG, "SampleFilesCategoriesListener -> " + tabId);
         }
@@ -137,11 +162,11 @@ public class SampleFileActivity extends Fragment implements AdapterView.OnItemCl
      * @return TabSpec array for sample files tab host
      */
     private TabHost.TabSpec[] getSampleFilesSubCategories(){
-        Set<String> sampleFilesSubCategoriesSet = FileSelectHelper.getSampleFilesSubCategories();
+        List<String> sampleFilesSubCategoriesList = FileSelectHelper.getSampleFilesSubCategories();
 
-        TabHost.TabSpec[] sampleFilesSubCategories = new TabHost.TabSpec[sampleFilesSubCategoriesSet.size()];
+        TabHost.TabSpec[] sampleFilesSubCategories = new TabHost.TabSpec[sampleFilesSubCategoriesList.size()];
 
-        Iterator<String> categoriesIter = sampleFilesSubCategoriesSet.iterator();
+        Iterator<String> categoriesIter = sampleFilesSubCategoriesList.iterator();
         for(int i = 0; i < sampleFilesSubCategories.length; i++) {
             String subCategoryName = categoriesIter.next();
 

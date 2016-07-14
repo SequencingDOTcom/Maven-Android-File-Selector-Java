@@ -2,14 +2,19 @@ package com.sequencing.fileselector.helper;
 
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 
 import com.sequencing.fileselector.FileEntity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -24,13 +29,13 @@ public class FileSelectHelper {
     public static final String ATTR_SAMPLE_MALE = "Male";
     public static final String ATTR_SAMPLE_FEMALE = "Female";
 
-    public static final String ATTR_SAMPLE_FROMAPPS = "FromApps";
-    public static final String ATTR_SAMPLE_UPLOADED = "Uploaded";
-    public static final String ATTR_SAMPLE_ALTRUIST = "Altruist";
-    public static final String ATTR_SAMPLE_SHARED = "SharedToM";
+    public static final String ATTR_MY_FILES_FROMAPPS = "FromApps";
+    public static final String ATTR_MY_FILES_UPLOADED = "Uploaded";
+    public static final String ATTR_MY_FILES_ALTRUIST = "Altruist";
+    public static final String ATTR_MY_FILES_SHARED = "SharedToM";
 
-    public static Map<String, String> myFilesCategoriesMap = new HashMap<String, String>();
-    public static Map<String, String> sampleCategoriesMap = new HashMap<String, String>();
+    public static Map<String, String> myFilesCategoriesMap = new TreeMap<String, String>();
+    public static Map<String, String> sampleCategoriesMap = new TreeMap<String, String>();
 
     public static FileEntity[] getFileEntities(String json){
         return JsonHelper.<FileEntity[]>convertToJavaObject(json, FileEntity[].class);
@@ -39,36 +44,46 @@ public class FileSelectHelper {
     /**
      * @return subcategories set of Sample files
      */
-    public static Set<String> getSampleFilesSubCategories(){
+    public static List<String> getSampleFilesSubCategories(){
         sampleCategoriesMap.put(ATTR_SAMPLE_ALL, "All");
-        sampleCategoriesMap.put(ATTR_SAMPLE_MALE, "Men");
         sampleCategoriesMap.put(ATTR_SAMPLE_FEMALE, "Women");
-        return new TreeSet<>(sampleCategoriesMap.keySet());
+        sampleCategoriesMap.put(ATTR_SAMPLE_MALE, "Men");
+        return new ArrayList<>(sampleCategoriesMap.keySet());
     }
 
     /**
      * @param entities all entities that are own files of user
      * @return subcategories set of My files
      */
-    public static Set<String> getMyFilesSubCategories(FileEntity[] entities) {
+    public static List<String> getMyFilesSubCategories(FileEntity[] entities) {
         for (FileEntity entity : entities) {
             switch (entity.getFileCategory()) {
-                case ATTR_SAMPLE_FROMAPPS:
-                    myFilesCategoriesMap.put(ATTR_SAMPLE_FROMAPPS, "From Apps");
+                case ATTR_MY_FILES_UPLOADED:
+                    myFilesCategoriesMap.put(ATTR_MY_FILES_UPLOADED, "Uploaded");
                     break;
-                case ATTR_SAMPLE_UPLOADED:
-                    myFilesCategoriesMap.put(ATTR_SAMPLE_UPLOADED, "Uploaded");
+                case ATTR_MY_FILES_FROMAPPS:
+                    myFilesCategoriesMap.put(ATTR_MY_FILES_FROMAPPS, "From Apps");
                     break;
-                case ATTR_SAMPLE_ALTRUIST:
-                    myFilesCategoriesMap.put(ATTR_SAMPLE_ALTRUIST, "Altruist");
+                case ATTR_MY_FILES_ALTRUIST:
+                    myFilesCategoriesMap.put(ATTR_MY_FILES_ALTRUIST, "Altruist");
                     break;
-                case ATTR_SAMPLE_SHARED:
-                    myFilesCategoriesMap.put(ATTR_SAMPLE_SHARED, "Shared");
+                case ATTR_MY_FILES_SHARED:
+                    myFilesCategoriesMap.put(ATTR_MY_FILES_SHARED, "Shared");
                     break;
             }
         }
 
-        return new TreeSet<>(myFilesCategoriesMap.keySet());
+        List<String> myFilesCategories =  new ArrayList<>(myFilesCategoriesMap.keySet());
+        Collections.sort(myFilesCategories, new CategoriesComparator());
+
+        return myFilesCategories;
+    }
+
+    private static class CategoriesComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            return o1.compareTo(o2) * (-1);
+        }
     }
 
     /**
@@ -161,6 +176,17 @@ public class FileSelectHelper {
         List<FileEntity> listEntities = getSampleFileEntitiesBySex(entities, sex);
 
         return fromSpannableStringsList(listEntities);
+    }
+
+    public static FileEntity getFileEntityByFileId(FileEntity[] entities, String fileId){
+        if(fileId == null)
+            return null;
+
+        for(FileEntity fileEntity: entities)
+            if(fileEntity.getId().equals(fileId))
+                return fileEntity;
+
+        return null;
     }
 
     /**
