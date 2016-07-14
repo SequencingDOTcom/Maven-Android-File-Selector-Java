@@ -54,8 +54,8 @@ You need to follow instructions below if you want to build in and use OAuth logi
 	* add dependency into build.gradle file in dependencies section. Here is dependency declaration example:
 	```
 	dependencies {
-   		compile 'com.sequencing:file-selector:1.0.3'
-        compile 'com.sequencing:android-oauth:1.0.2'
+   		compile 'com.sequencing:file-selector:1.0.26'
+        compile 'com.sequencing:android-oauth:1.0.18'
     }
 	```
 * integrate autherization functionality
@@ -128,7 +128,7 @@ You need to follow instructions below if you want to build in and use OAuth logi
                         Toast toast = Toast.makeText(getApplicationContext(), entity.toString(), Toast.LENGTH_LONG);
                         toast.show();
                     }
-                });
+                }, true, false);
 	```
 
 
