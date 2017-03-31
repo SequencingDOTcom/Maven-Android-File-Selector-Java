@@ -43,7 +43,7 @@ public class SQUIFileSelectHandler {
      * @param fileCallback user callback for handling selected file
      * @param fileId previous selected file
      */
-    public void selectFile(SequencingOAuth2Client sequencingOAuth2Client, ISQFileCallback fileCallback, boolean showRotatingCube, @Nullable String fileId){
+    public void selectFile(SequencingOAuth2Client sequencingOAuth2Client, ISQFileCallback fileCallback, @Nullable String fileId){
         if (fileCallback == null)
             throw new RuntimeException();
         this.fileCallback = fileCallback;
@@ -51,10 +51,29 @@ public class SQUIFileSelectHandler {
 
         Intent intent = new Intent(context, SplashActivity.class);
         intent.putExtra("fileId", fileId);
-        intent.putExtra("showRotatingCube", showRotatingCube);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+    /**
+     * Receives files from Sequencing.com and sends them to user handler
+     * @param fileCallback user callback for handling selected file
+     * @param fileId previous selected file
+     * @param videoName video's name for background
+     */
+    public void selectFile(SequencingOAuth2Client sequencingOAuth2Client, ISQFileCallback fileCallback, @Nullable String fileId, String videoName){
+        if (fileCallback == null)
+            throw new RuntimeException();
+        this.fileCallback = fileCallback;
+        this.sequencingOAuth2Client = sequencingOAuth2Client;
+
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.putExtra("fileId", fileId);
+        intent.putExtra("videoName", videoName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
 
     public static ISQFileCallback getFileCallback(){
         return fileCallback;

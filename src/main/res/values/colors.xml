@@ -13,9 +13,7 @@
     <color name="btnBackgroundCollor">#cccccc</color>
     <color name="btnBackgroundCollorPressed">#bebebe</color>
     <color name="btnBackgroundCollorBorder">#b7b7b7</color>
-
-
-
+    <color name="main_layouts_background">#25559597</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
 </resources>

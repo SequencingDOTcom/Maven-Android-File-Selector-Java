@@ -1,9 +1,12 @@
 package com.sequencing.fileselector.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,8 @@ import com.nhaarman.supertooltips.ToolTip;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 import com.nhaarman.supertooltips.ToolTipView;
 import com.sequencing.fileselector.R;
+import com.sequencing.fileselector.videobackground.customview.CVideoView;
+import com.sequencing.fileselector.videobackground.helper.AppUIHelper;
 
 public class PreFileSelectorActivity extends AppCompatActivity implements View.OnClickListener, ToolTipView.OnToolTipViewClickedListener {
 
@@ -25,11 +30,14 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
     private Button btnMyFiles;
     private Button btnSampleFiles;
     private ToolTipView toolTipView;
+    private CVideoView videoView;
+    private String videoName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_file_selector);
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -48,6 +56,7 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
 
 
 
+        videoView = (CVideoView) findViewById(R.id.video_view);
         btnMyFiles = (Button) findViewById(R.id.btnMyFiles);
         btnMyFiles.setCompoundDrawables(sdMyFiles.getDrawable(), null, null, null);
 
@@ -74,6 +83,16 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
         fileSelectorIntent.putExtra("serverResponse", getIntent().getStringExtra("serverResponse"));
         fileSelectorIntent.putExtra("fileId", getIntent().getStringExtra("fileId"));
         fileSelectorIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        videoName = getIntent().getStringExtra("videoName");
+        if(videoName != null){
+            initVideoView();
+            playVideo();
+        }
     }
 
     @Override
@@ -112,5 +131,62 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
     public void onToolTipViewClicked(ToolTipView toolTipView) {
         this.toolTipView.remove();
         this.toolTipView = null;
+    }
+
+    private void initVideoView() {
+        if (videoView != null) {
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                    videoView.setOnCorrectVideoDimensions(getCorrectVideoDimensions());
+                    mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                        public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                            videoView.onVideoSizeChanged(mp);
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void playVideo() {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            videoView.setAlignment(CVideoView.ALIGN_WIDTH);
+        } else {
+            videoView.setAlignment(CVideoView.ALIGN_NONE);
+        }
+        videoView.setVisibility(View.VISIBLE);
+        String videoNameWithoutExtension = videoName.split("\\.")[0];
+        int raw_id = getResources().getIdentifier(videoNameWithoutExtension, "raw", getPackageName());
+        String path = "android.resource://" + getPackageName() + "/" + raw_id;
+        videoView.setVideoURI(Uri.parse(path));
+        videoView.start();
+    }
+
+    private void stopVideo() {
+        videoView.stopPlayback();
+        videoView.setVisibility(View.GONE);
+    }
+
+    /**
+     * Adjust video layout according to video dimensions
+     */
+    private CVideoView.OnCorrectVideoDimensions getCorrectVideoDimensions() {
+        return new CVideoView.OnCorrectVideoDimensions() {
+            @Override
+            public void correctDimensions(int width, int height) {
+                AppUIHelper.resizeLayout(videoView, height, width, 300, null);
+            }
+        };
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(videoView != null){
+            stopVideo();
+        }
     }
 }

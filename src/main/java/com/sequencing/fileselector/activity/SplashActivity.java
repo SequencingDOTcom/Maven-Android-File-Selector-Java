@@ -14,7 +14,6 @@ import com.sequencing.fileselector.core.SQUIFileSelectHandler;
 import com.sequencing.oauth.exception.NonAuthorizedException;
 
 
-
 public class SplashActivity extends AppCompatActivity {
 
     private RequestDateTask requestDateTask;
@@ -28,9 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         pbProgress = (ProgressBar) findViewById(R.id.pbProgress);
-
-        if(!getIntent().getBooleanExtra("showRotatingCube", true))
-            pbProgress.setVisibility(View.GONE);
+        pbProgress.setVisibility(View.VISIBLE);
 
         requestDateTask = new RequestDateTask();
         requestDateTask.execute();
@@ -58,10 +55,13 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            if (pbProgress != null) {
+                pbProgress.setVisibility(View.GONE);
+            }
 
             Intent intent = new Intent(getBaseContext(), PreFileSelectorActivity.class);
             intent.putExtra("serverResponse", jsonResponse);
-            intent.putExtra("fileId", getIntent().getStringExtra("fileId"));
+            intent.putExtra("videoName", getIntent().getStringExtra("videoName"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getBaseContext().startActivity(intent);
             finish();
