@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.nhaarman.supertooltips.ToolTip;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
@@ -29,6 +30,8 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
     private Toolbar toolbar;
     private Button btnMyFiles;
     private Button btnSampleFiles;
+    private TextView tvTextTitle;
+    private TextView tvText;
     private ToolTipView toolTipView;
     private CVideoView videoView;
     private String videoName;
@@ -37,7 +40,6 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_file_selector);
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -54,11 +56,12 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
         drawableSampleFiles.setBounds(0, 0, (int) (drawableSampleFiles.getIntrinsicWidth() * 0.6), (int) (drawableSampleFiles.getIntrinsicHeight() * 0.6));
         ScaleDrawable sdSampleFiles = new ScaleDrawable(drawableSampleFiles, 0, 50, 50);
 
-
-
         videoView = (CVideoView) findViewById(R.id.video_view);
         btnMyFiles = (Button) findViewById(R.id.btnMyFiles);
         btnMyFiles.setCompoundDrawables(sdMyFiles.getDrawable(), null, null, null);
+
+        tvTextTitle = (TextView) findViewById(R.id.tvTextTitle);
+        tvText = (TextView) findViewById(R.id.tvText);
 
         btnSampleFiles = (Button) findViewById(R.id.btnSampleFiles);
         btnSampleFiles.setCompoundDrawables(sdSampleFiles.getDrawable(), null, null, null);
@@ -92,6 +95,20 @@ public class PreFileSelectorActivity extends AppCompatActivity implements View.O
         if(videoName != null){
             initVideoView();
             playVideo();
+            setColorText(true);
+        } else {
+            videoView.setVisibility(View.GONE);
+            setColorText(false);
+        }
+    }
+
+    private void setColorText(boolean isVideo){
+        if(isVideo){
+            tvTextTitle.setTextColor(getResources().getColor(android.R.color.white));
+            tvText.setTextColor(getResources().getColor(android.R.color.white));
+        } else {
+            tvTextTitle.setTextColor(getResources().getColor(android.R.color.black));
+            tvText.setTextColor(getResources().getColor(android.R.color.black));
         }
     }
 

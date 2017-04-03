@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activity.PreFileSelectorActivity">
+    tools:context=".activity.PreFileSelectorActivity"
+    android:background="@android:color/white">
     <com.sequencing.fileselector.videobackground.customview.CVideoView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:visibility="visible" />
+        android:visibility="gone" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -47,6 +48,7 @@
             android:paddingTop="@dimen/activity_vertical_margin">
 
             <TextView
+                android:id="@+id/tvTextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -55,6 +57,7 @@
                 android:text="@string/pre_file_selector_content_1" />
 
             <TextView
+                android:id="@+id/tvText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/activity_horizontal_margin"

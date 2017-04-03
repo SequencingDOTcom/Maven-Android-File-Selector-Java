@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java'
     gitUrl = 'https://github.com/SequencingDOTcom/Maven-Android-File-Selector-Java.git'
 
-    libraryVersion = '1.0.29'
+    libraryVersion = '1.0.30'
 
     developerId = 'Sequencing LLC'
     developerName = 'Sequencing LLC'
@@ -33,7 +33,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.29"
+        versionName "1.0.30"
     }
     buildTypes {
         release {
@@ -65,5 +65,5 @@ tasks.withType(Javadoc) {
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
 }
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
