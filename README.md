@@ -1,6 +1,6 @@
-# File Selector Maven plugin for adding Squencing.com's Real-Time Personalization technology to Android and Java apps
-=========================================
-This Maven plugin can be used to quickly add a File Selector to your app. By adding this File Selector to your app, you're app user will be able to select a file stored securely in the user's [Sequencing.com](https://sequencing.com) account. Your app will then be able to use the genetic data in this file to provide the user with Real-Time Personalization.
+# File Selector Gradle and Maven plugin for adding Squencing.com's Real-Time Personalization technology to Android and Java apps
+
+This Gradle and Maven plugin can be used to quickly add a File Selector to your app. By adding this File Selector to your app, you're app user will be able to select a file stored securely in the user's [Sequencing.com](https://sequencing.com) account. Your app will then be able to use the genetic data in this file to provide the user with Real-Time Personalization.
 
 While the File Selector works out-of-the-box, it is also fully customizable.
 
